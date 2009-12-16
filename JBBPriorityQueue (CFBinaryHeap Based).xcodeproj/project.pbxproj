@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		17051EA81056A3DE0073998F /* JBBPriorityQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 17051EA61056A3DE0073998F /* JBBPriorityQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		17051EA91056A3DE0073998F /* JBBPriorityQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 17051EA71056A3DE0073998F /* JBBPriorityQueue.m */; };
+		179B28FD10D97CDF005BF151 /* NSObject+AssociatedObjects.h in Headers */ = {isa = PBXBuildFile; fileRef = 179B28FB10D97CDF005BF151 /* NSObject+AssociatedObjects.h */; };
+		179B28FE10D97CDF005BF151 /* NSObject+AssociatedObjects.m in Sources */ = {isa = PBXBuildFile; fileRef = 179B28FC10D97CDF005BF151 /* NSObject+AssociatedObjects.m */; };
 		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
@@ -19,6 +21,8 @@
 		1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		17051EA61056A3DE0073998F /* JBBPriorityQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBBPriorityQueue.h; sourceTree = "<group>"; };
 		17051EA71056A3DE0073998F /* JBBPriorityQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JBBPriorityQueue.m; sourceTree = "<group>"; };
+		179B28FB10D97CDF005BF151 /* NSObject+AssociatedObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+AssociatedObjects.h"; sourceTree = "<group>"; };
+		179B28FC10D97CDF005BF151 /* NSObject+AssociatedObjects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+AssociatedObjects.m"; sourceTree = "<group>"; };
 		32DBCF5E0370ADEE00C91783 /* JBBPriorityQueue_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JBBPriorityQueue_Prefix.pch; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* JBBPriorityQueue.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = JBBPriorityQueue.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -77,6 +81,8 @@
 		08FB77AEFE84172EC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				179B28FB10D97CDF005BF151 /* NSObject+AssociatedObjects.h */,
+				179B28FC10D97CDF005BF151 /* NSObject+AssociatedObjects.m */,
 				17051EA61056A3DE0073998F /* JBBPriorityQueue.h */,
 				17051EA71056A3DE0073998F /* JBBPriorityQueue.m */,
 			);
@@ -115,6 +121,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				17051EA81056A3DE0073998F /* JBBPriorityQueue.h in Headers */,
+				179B28FD10D97CDF005BF151 /* NSObject+AssociatedObjects.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -187,6 +194,7 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
 			shellScript = "BRIDGE_SUPPORT_DIR=\"Resources/BridgeSupport\"\nBRIDGE_SUPPORT_FILE=\"${BRIDGE_SUPPORT_DIR}/${TARGET_NAME}.bridgesupport\"\n\nif [[ \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/${TARGET_NAME}\" -nt \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/${BRIDGE_SUPPORT_FILE}\" ]]; then\n  if [[ ! -d \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/${BRIDGE_SUPPORT_DIR}\" ]]; then\n    mkdir -p \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/${BRIDGE_SUPPORT_DIR}\"\n  fi\n  gen_bridge_metadata --64-bit --framework \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\" -o \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/${BRIDGE_SUPPORT_FILE}\"\nfi";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -196,6 +204,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				17051EA91056A3DE0073998F /* JBBPriorityQueue.m in Sources */,
+				179B28FE10D97CDF005BF151 /* NSObject+AssociatedObjects.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
