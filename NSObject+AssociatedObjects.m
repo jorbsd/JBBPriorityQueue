@@ -12,12 +12,12 @@
 
 - (void)associateValue:(id)value withKey:(void *)key
 {
-	objc_setAssociatedObject(self, key, value, OBJC_ASSOCIATION_RETAIN);
+    objc_setAssociatedObject(self, key, value, OBJC_ASSOCIATION_RETAIN);
 }
 
 - (id)associatedValueForKey:(void *)key
 {
-	return objc_getAssociatedObject(self, key);
+    return objc_getAssociatedObject(self, key);
 }
 
 @end

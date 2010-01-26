@@ -8,11 +8,6 @@
 
 typedef int (^JBBComparisonBlock)(id lhs, id rhs);
 
-enum JBBHeapType {
-  JBBMinimumHeap = 1,
-  JBBMaximumHeap,
-};
-
 @protocol JBBComparisonProtocol <NSObject>
 - (NSComparisonResult)compare:(id)rhs;
 @end
@@ -35,9 +30,18 @@ enum JBBHeapType {
 
 - (id)initWithBlock:(JBBComparisonBlock)comparisonBlock;
 - (id)initWithClass:(Class)classToStore;
-- (id)initWithClass:(Class)classToStore heapType:(enum JBBHeapType)heapType;
+- (id)initWithClass:(Class)classToStore ordering:(NSComparisonResult)ordering;
+
+// ruby style interface
 - (void)push:(id)obj;
 - (void)pushObjects:(NSArray *)objs;
 - (id)pop;
+- (id)peek;
+
+// objective-c style interface
+- (void)addObject:(id)obj;
+- (void)addObjects:(NSArray *)objs;
+- (id)removeFirstObject;
+- (id)firstObject;
 @end
 
