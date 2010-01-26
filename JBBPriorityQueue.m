@@ -9,39 +9,17 @@
 #import "JBBPriorityQueue.h"
 #import "NSObject+AssociatedObjects.h"
 
-// Block CallBacks
+// block callbacks
 
-CFComparisonResult JBBBlockCompare(id lhs, id rhs) {
-    JBBComparisonBlock localBlock = [[lhs associatedValueForKey:@"JBBSortDelegate"] mComparisonBlock];
+CFComparisonResult JBBBlockCompare(id, id);
+CFComparisonResult JBBBlockCallBack(const void *, const void *, void *);
 
-    return localBlock(lhs, rhs);
-}
+// regular callbacks
 
-CFComparisonResult JBBBlockCallBack(const void *lhs, const void *rhs, void *info) {
-    return JBBBlockCompare((id)lhs, (id)rhs);
-}
-
-// Regular CallBacks
-
-CFComparisonResult JBBMinimumBoxedCompare(id <JBBBoxedComparisonProtocol> lhs, id <JBBBoxedComparisonProtocol> rhs) {
-    return [[lhs compare:rhs] intValue];
-}
-
-CFComparisonResult JBBMinimumCompare(id <JBBComparisonProtocol> lhs, id <JBBComparisonProtocol> rhs) {
-    return [lhs compare:rhs];
-}
-
-CFComparisonResult JBBMinimumCallBack(const void *lhs, const void *rhs, void *info) {
-    if ([[(id)lhs associatedValueForKey:@"JBBSortDelegate"] mBoxed]) {
-        return JBBMinimumBoxedCompare((id)lhs, (id)rhs);
-    } else {
-        return JBBMinimumCompare((id)lhs, (id)rhs);
-    }
-}
-
-CFComparisonResult JBBMaximumCallBack(const void *lhs, const void *rhs, void *info) {
-    return JBBMinimumCallBack(lhs, rhs, info) * -1;
-}
+CFComparisonResult JBBMinimumBoxedCompare(id <JBBBoxedComparisonProtocol>, id <JBBBoxedComparisonProtocol>);
+CFComparisonResult JBBMinimumCompare(id <JBBComparisonProtocol>, id <JBBComparisonProtocol>);
+CFComparisonResult JBBMinimumCallBack(const void *, const void *, void *);
+CFComparisonResult JBBMaximumCallBack(const void *, const void *, void *);
 
 @interface JBBPriorityQueue ()
 // synthesized properties
@@ -52,6 +30,10 @@ CFComparisonResult JBBMaximumCallBack(const void *lhs, const void *rhs, void *in
 @property (assign) BOOL mBoxed;
 @property (retain) JBBComparisonBlock mComparisonBlock;
 @property (assign) CFBinaryHeapCallBacks mCallBacks;
+
+// non-synthesized properties
+
+@property (readonly) CFBinaryHeapCallBacks *pCallBacks;
 
 - (id)initWithBlock:(JBBComparisonBlock)comparisonBlock class:(Class)classToStore ordering:(NSComparisonResult)ordering;
 - (void)buildHeap;
@@ -220,5 +202,100 @@ CFComparisonResult JBBMaximumCallBack(const void *lhs, const void *rhs, void *in
 - (CFBinaryHeapCallBacks *)pCallBacks {
     return &mCallBacks;
 }
+
+- (NSUInteger)hash {
+    if (!self.mHeapified) {
+        [self buildHeap];
+    }
+
+    NSUInteger localHash = 0;
+
+    localHash ^= CFHash(self.mObjs);
+    localHash ^= self.mBoxed;
+
+    return localHash;
+}
+
+- (BOOL)isEqual:(id)otherObj {
+    if (self == otherObj) {
+        return YES;
+    }
+
+    if (![otherObj isKindOfClass:[JBBPriorityQueue class]]) {
+        return NO;
+    }
+
+    return [self isEqualToQueue:otherObj];
+}
+
+- (BOOL) isEqualToQueue:(JBBPriorityQueue *)otherQueue {
+    if (self == otherQueue) {
+        return YES;
+    }
+
+    if (!self.mHeapified) {
+        [self buildHeap];
+    }
+    if (!otherQueue.mHeapified) {
+        [otherQueue buildHeap];
+    }
+
+    if (self.mBoxed != otherQueue.mBoxed) {
+        return NO;
+    }
+
+    CFIndex count1 = CFBinaryHeapGetCount(self.mObjs);
+    CFIndex count2 = CFBinaryHeapGetCount(otherQueue.mObjs);
+
+    const void **array1 = calloc(count1, sizeof(void *));
+    CFBinaryHeapGetValues(self.mObjs, array1);
+    NSArray *NSArray1 = [NSArray arrayWithObjects:(id *)array1 count:count1];
+    free(array1);
+
+    const void **array2 = calloc(count2, sizeof(void *));
+    CFBinaryHeapGetValues(otherQueue.mObjs, array2);
+    NSArray *NSArray2 = [NSArray arrayWithObjects:(id *)array2 count:count2];
+    free(array2);
+
+    if (![NSArray1 isEqualToArray:NSArray2]) {
+        return NO;
+    }
+
+    return YES;
+}
 @end
+
+// block callbacks
+
+CFComparisonResult JBBBlockCompare(id lhs, id rhs) {
+    JBBComparisonBlock localBlock = [[lhs associatedValueForKey:@"JBBSortDelegate"] mComparisonBlock];
+
+    return localBlock(lhs, rhs);
+}
+
+CFComparisonResult JBBBlockCallBack(const void *lhs, const void *rhs, void *info) {
+    return JBBBlockCompare((id)lhs, (id)rhs);
+}
+
+// regular callbacks
+
+CFComparisonResult JBBMinimumBoxedCompare(id <JBBBoxedComparisonProtocol> lhs, id <JBBBoxedComparisonProtocol> rhs) {
+    return [[lhs compare:rhs] intValue];
+}
+
+CFComparisonResult JBBMinimumCompare(id <JBBComparisonProtocol> lhs, id <JBBComparisonProtocol> rhs) {
+    return [lhs compare:rhs];
+}
+
+CFComparisonResult JBBMinimumCallBack(const void *lhs, const void *rhs, void *info) {
+    if ([[(id)lhs associatedValueForKey:@"JBBSortDelegate"] mBoxed]) {
+        return JBBMinimumBoxedCompare((id)lhs, (id)rhs);
+    } else {
+        return JBBMinimumCompare((id)lhs, (id)rhs);
+    }
+}
+
+CFComparisonResult JBBMaximumCallBack(const void *lhs, const void *rhs, void *info) {
+    return JBBMinimumCallBack(lhs, rhs, info) * -1;
+}
 

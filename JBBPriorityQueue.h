@@ -17,16 +17,10 @@ typedef int (^JBBComparisonBlock)(id lhs, id rhs);
 @end
 
 @interface JBBPriorityQueue : NSObject
-// synthesized properties
-
-@property (readonly, assign) BOOL mBoxed;
-@property (readonly, copy) JBBComparisonBlock mComparisonBlock;
-
 // non-synthesized properties
 
 @property (readonly) CFIndex count;
 @property (readonly) BOOL isEmpty;
-@property (readonly) CFBinaryHeapCallBacks *pCallBacks;
 
 - (id)initWithBlock:(JBBComparisonBlock)comparisonBlock;
 - (id)initWithClass:(Class)classToStore;
@@ -43,5 +37,7 @@ typedef int (^JBBComparisonBlock)(id lhs, id rhs);
 - (void)addObjects:(NSArray *)objs;
 - (id)removeFirstObject;
 - (id)firstObject;
+
+- (BOOL)isEqualToQueue:(JBBPriorityQueue *)otherQueue;
 @end
 
