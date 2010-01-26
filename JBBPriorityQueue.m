@@ -245,13 +245,12 @@ CFComparisonResult JBBMaximumCallBack(const void *, const void *, void *);
     }
 
     CFIndex count1 = CFBinaryHeapGetCount(self.mObjs);
-    CFIndex count2 = CFBinaryHeapGetCount(otherQueue.mObjs);
-
     const void **array1 = calloc(count1, sizeof(void *));
     CFBinaryHeapGetValues(self.mObjs, array1);
     NSArray *NSArray1 = [NSArray arrayWithObjects:(id *)array1 count:count1];
     free(array1);
 
+    CFIndex count2 = CFBinaryHeapGetCount(otherQueue.mObjs);
     const void **array2 = calloc(count2, sizeof(void *));
     CFBinaryHeapGetValues(otherQueue.mObjs, array2);
     NSArray *NSArray2 = [NSArray arrayWithObjects:(id *)array2 count:count2];
