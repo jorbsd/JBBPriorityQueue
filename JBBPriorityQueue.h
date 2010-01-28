@@ -6,7 +6,7 @@
 //  Copyright 2009 Jordan Breeding. All rights reserved.
 //
 
-typedef int (^JBBComparisonBlock)(id lhs, id rhs);
+typedef NSComparisonResult (^JBBComparisonBlock)(id lhs, id rhs);
 
 @protocol JBBComparisonProtocol <NSObject>
 - (NSComparisonResult)compare:(id)rhs;

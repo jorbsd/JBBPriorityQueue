@@ -49,6 +49,7 @@ CFComparisonResult JBBMaximumCallBack(const void *, const void *, void *);
 
 - (id)init {
     NSAssert(NO, @"Use of a more specific initializer is required for JBBPriorityQueue.");
+    return nil;
 }
 
 - (id)initWithBlock:(JBBComparisonBlock)comparisonBlock {
