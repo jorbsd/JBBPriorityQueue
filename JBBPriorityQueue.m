@@ -5,6 +5,8 @@
 //  Created by Jordan Breeding on 09/08/09.
 //  Copyright 2009 Jordan Breeding. All rights reserved.
 //
+//  BSD License, Use at your own risk
+//
 
 #import "JBBPriorityQueue.h"
 #import "NSObject+AssociatedObjects.h"
@@ -157,13 +159,13 @@ CFComparisonResult JBBMaximumCallBack(const void *, const void *, void *);
 
     return [[(id)CFBinaryHeapGetMinimum(self.mObjs) retain] autorelease];
 
-//    id returnVal = nil;
-//
-//    if (CFBinaryHeapGetMinimumIfPresent(self.mObjs, (const void**)&returnVal)) {
-//        [returnVal retain];
-//    }
-//
-//    return [returnVal autorelease];
+    //    id returnVal = nil;
+    //
+    //    if (CFBinaryHeapGetMinimumIfPresent(self.mObjs, (const void**)&returnVal)) {
+    //        [returnVal retain];
+    //    }
+    //
+    //    return [returnVal autorelease];
 }
 
 - (void)addObject:(id)obj {

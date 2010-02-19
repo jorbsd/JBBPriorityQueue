@@ -5,6 +5,8 @@
 //  Created by Jordan Breeding on 09/08/09.
 //  Copyright 2009 Jordan Breeding. All rights reserved.
 //
+//  BSD License, Use at your own risk
+//
 
 typedef NSComparisonResult (^JBBComparisonBlock)(id lhs, id rhs);
 

@@ -1,10 +1,12 @@
 //
-// Prefix header for all source files of the 'JBBPriorityQueue' target in the 'JBBPriorityQueue' project.
+//  Prefix header for all source files of the 'JBBPriorityQueue' target in the 'JBBPriorityQueue' project.
+//
+//  BSD License, Use at your own risk
 //
 
 #import <CoreFoundation/CoreFoundation.h>
 
 #ifdef __OBJC__
-    #import <Cocoa/Cocoa.h>
+#import <Cocoa/Cocoa.h>
 #endif
 
