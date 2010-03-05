@@ -8,6 +8,6 @@
 #import <Cocoa/Cocoa.h>
 
 @interface NSObject (AMAssociatedObjects)
-- (void)associateValue:(id)value withKey:(void *)key; // Retains value.
-- (id)associatedValueForKey:(void *)key;
+- (void)am_associateValue:(id)value withKey:(void *)key; // Retains value.
+- (id)am_associatedValueForKey:(void *)key;
 @end

@@ -10,12 +10,12 @@
 
 @implementation NSObject (AMAssociatedObjects)
 
-- (void)associateValue:(id)value withKey:(void *)key
+- (void)am_associateValue:(id)value withKey:(void *)key
 {
     objc_setAssociatedObject(self, key, value, OBJC_ASSOCIATION_RETAIN);
 }
 
-- (id)associatedValueForKey:(void *)key
+- (id)am_associatedValueForKey:(void *)key
 {
     return objc_getAssociatedObject(self, key);
 }

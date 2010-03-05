@@ -119,7 +119,7 @@ CFComparisonResult JBBMaximumCallBack(const void *, const void *, void *);
     }
 
     [self.mObjsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger index, BOOL *stop) {
-        [obj associateValue:self withKey:@"JBBSortDelegate"];
+        [obj am_associateValue:self withKey:@"JBBSortDelegate"];
         CFBinaryHeapAddValue(self.mObjs, obj);
     }];
 
@@ -130,7 +130,7 @@ CFComparisonResult JBBMaximumCallBack(const void *, const void *, void *);
 
 - (void)push:(id)obj {
     if (self.mHeapified) {
-        [obj associateValue:self withKey:@"JBBSortDelegate"];
+        [obj am_associateValue:self withKey:@"JBBSortDelegate"];
         CFBinaryHeapAddValue(self.mObjs, obj);
     } else {
         [self.mObjsArray addObject:obj];
@@ -270,7 +270,7 @@ CFComparisonResult JBBMaximumCallBack(const void *, const void *, void *);
 // block callbacks
 
 CFComparisonResult JBBBlockCompare(id lhs, id rhs) {
-    JBBComparisonBlock localBlock = [[lhs associatedValueForKey:@"JBBSortDelegate"] mComparisonBlock];
+    JBBComparisonBlock localBlock = [[lhs am_associatedValueForKey:@"JBBSortDelegate"] mComparisonBlock];
 
     return localBlock(lhs, rhs);
 }
@@ -290,7 +290,7 @@ CFComparisonResult JBBMinimumCompare(id <JBBComparisonProtocol> lhs, id <JBBComp
 }
 
 CFComparisonResult JBBMinimumCallBack(const void *lhs, const void *rhs, void *info) {
-    if ([[(id)lhs associatedValueForKey:@"JBBSortDelegate"] mBoxed]) {
+    if ([[(id)lhs am_associatedValueForKey:@"JBBSortDelegate"] mBoxed]) {
         return JBBMinimumBoxedCompare((id)lhs, (id)rhs);
     } else {
         return JBBMinimumCompare((id)lhs, (id)rhs);

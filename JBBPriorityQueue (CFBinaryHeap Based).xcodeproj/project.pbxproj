@@ -136,7 +136,7 @@
 				8DC2EF520486A6940098B216 /* Resources */,
 				8DC2EF540486A6940098B216 /* Sources */,
 				8DC2EF560486A6940098B216 /* Frameworks */,
-				17D6C40C10BCEE8600628EFE /* Gen BridgeSupport */,
+				17D6C40C10BCEE8600628EFE /* Build BridgeSupport Files */,
 			);
 			buildRules = (
 			);
@@ -181,19 +181,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		17D6C40C10BCEE8600628EFE /* Gen BridgeSupport */ = {
+		17D6C40C10BCEE8600628EFE /* Build BridgeSupport Files */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Gen BridgeSupport";
+			name = "Build BridgeSupport Files";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "BRIDGE_SUPPORT_DIR=\"Resources/BridgeSupport\"\nBRIDGE_SUPPORT_FILE=\"${BRIDGE_SUPPORT_DIR}/${TARGET_NAME}.bridgesupport\"\n\nif [[ \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/${TARGET_NAME}\" -nt \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/${BRIDGE_SUPPORT_FILE}\" ]]; then\n  if [[ ! -d \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/${BRIDGE_SUPPORT_DIR}\" ]]; then\n    mkdir -p \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/${BRIDGE_SUPPORT_DIR}\"\n  fi\n  gen_bridge_metadata --64-bit --framework \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\" -o \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/${BRIDGE_SUPPORT_FILE}\"\nfi";
+			shellScript = "printf \"Building BridgeSupport files...\\n\\n\"\n\nBRIDGE_SUPPORT_DIR=\"Resources/BridgeSupport\"\nBRIDGE_SUPPORT_FILE=\"${BRIDGE_SUPPORT_DIR}/${TARGET_NAME}.bridgesupport\"\n\nif [[ \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/${TARGET_NAME}\" -nt \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/${BRIDGE_SUPPORT_FILE}\" ]]; then\n  if [[ ! -d \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/${BRIDGE_SUPPORT_DIR}\" ]]; then\n    mkdir -p \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/${BRIDGE_SUPPORT_DIR}\"\n  fi\n  gen_bridge_metadata --64-bit --framework \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\" -o \"${TARGET_BUILD_DIR}/${WRAPPER_NAME}/${BRIDGE_SUPPORT_FILE}\"\nfi";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
