@@ -9,7 +9,6 @@
 #import <objc/runtime.h>
 
 @implementation NSObject (AMAssociatedObjects)
-
 - (void)am_associateValue:(id)value withKey:(void *)key
 {
     objc_setAssociatedObject(self, key, value, OBJC_ASSOCIATION_RETAIN);
@@ -19,5 +18,5 @@
 {
     return objc_getAssociatedObject(self, key);
 }
-
 @end
+

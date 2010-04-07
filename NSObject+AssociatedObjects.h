@@ -11,3 +11,4 @@
 - (void)am_associateValue:(id)value withKey:(void *)key; // Retains value.
 - (id)am_associatedValueForKey:(void *)key;
 @end
+

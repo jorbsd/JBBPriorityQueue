@@ -22,32 +22,29 @@ CFComparisonResult JBBMinimumBoxedCompare(id <JBBBoxedComparisonProtocol>, id <J
 CFComparisonResult JBBMinimumCompare(id <JBBComparisonProtocol>, id <JBBComparisonProtocol>);
 CFComparisonResult JBBMinimumCallBack(const void *, const void *, void *);
 CFComparisonResult JBBMaximumCallBack(const void *, const void *, void *);
+void JBBBuildDescriptionCallBack(const void *, void *);
 
 @interface JBBPriorityQueue ()
 // synthesized properties
 
-@property (assign) __strong CFBinaryHeapRef mObjs;
-@property (retain) NSMutableArray *mObjsArray;
-@property (assign) BOOL mHeapified;
-@property (assign) BOOL mBoxed;
-@property (retain) JBBComparisonBlock mComparisonBlock;
-@property (assign) CFBinaryHeapCallBacks mCallBacks;
-
-// non-synthesized properties
-
-@property (readonly) CFBinaryHeapCallBacks *pCallBacks;
+@property (assign) __strong CFBinaryHeapRef objs;
+@property (retain) NSMutableArray *objsArray;
+@property (assign) BOOL heapified;
+@property (assign) BOOL boxed;
+@property (retain) JBBComparisonBlock comparisonBlock;
+@property (assign) CFBinaryHeapCallBacks callBacks;
 
 - (id)initWithBlock:(JBBComparisonBlock)comparisonBlock class:(Class)classToStore ordering:(NSComparisonResult)ordering;
 - (void)buildHeap;
 @end
 
 @implementation JBBPriorityQueue
-@synthesize mObjs;
-@synthesize mObjsArray;
-@synthesize mHeapified;
-@synthesize mBoxed;
-@synthesize mComparisonBlock;
-@synthesize mCallBacks;
+@synthesize objs = mObjs;
+@synthesize objsArray = mObjsArray;
+@synthesize heapified = mHeapified;
+@synthesize boxed = mBoxed;
+@synthesize comparisonBlock = mComparisonBlock;
+@synthesize callBacks = mCallBacks;
 
 - (id)init {
     NSAssert(NO, @"Use of a more specific initializer is required for JBBPriorityQueue.");
@@ -70,83 +67,87 @@ CFComparisonResult JBBMaximumCallBack(const void *, const void *, void *);
     self = [super init];
 
     if (self) {
-        self.mHeapified = NO;
-        self.mBoxed = NO;
-        self.mComparisonBlock = nil;
+        self.heapified = NO;
+        self.boxed = NO;
+        self.comparisonBlock = nil;
 
         // we can abuse kCFStringBinaryHeapCallBacks here
-        self.mCallBacks = kCFStringBinaryHeapCallBacks;
-        self.pCallBacks->compare = NULL;
+
+        mCallBacks.version = 0;
+        mCallBacks.retain = kCFStringBinaryHeapCallBacks.retain;
+        mCallBacks.release = kCFStringBinaryHeapCallBacks.release;
+        mCallBacks.copyDescription = kCFStringBinaryHeapCallBacks.copyDescription;
+        mCallBacks.compare = NULL;
 
         if (comparisonBlock) {
-            self.mComparisonBlock = comparisonBlock;
-            self.pCallBacks->compare = JBBBlockCallBack;
+            self.comparisonBlock = comparisonBlock;
+            mCallBacks.compare = JBBBlockCallBack;
         } else {
             NSAssert([classToStore instancesRespondToSelector:@selector(compare:)], @"JBBPriorityQueue requires nodes to respond to @selector(compare:)");
 
             const char *boxedReturnType = "@";
 
             if (strcmp(boxedReturnType, [[classToStore instanceMethodSignatureForSelector:@selector(compare:)] methodReturnType]) == 0) {
-                self.mBoxed = YES;
+                self.boxed = YES;
             }
 
             NSAssert(ordering != NSOrderedSame, @"JBBPriorityQueue requires ordering to be NSOrderedAscending or NSOrderedDescending");
-            self.pCallBacks->compare = (ordering == NSOrderedAscending) ? JBBMinimumCallBack : JBBMaximumCallBack;
+            mCallBacks.compare = (ordering == NSOrderedAscending) ? JBBMinimumCallBack : JBBMaximumCallBack;
         }
 
-        self.mObjs = (CFBinaryHeapRef)CFMakeCollectable(CFBinaryHeapCreate(NULL, 0, self.pCallBacks, NULL));
-        self.mObjsArray = [NSMutableArray array];
+        self.objs = (CFBinaryHeapRef)CFMakeCollectable(CFBinaryHeapCreate(NULL, 0, &mCallBacks, NULL));
+        self.objsArray = [NSMutableArray array];
     }
 
     return self;
 }
 
 - (void)dealloc {
-    if (self.mObjs) {
-        CFRelease(self.mObjs);
-        self.mObjs = NULL;
+    if (self.objs) {
+        CFRelease(self.objs);
+        self.objs = NULL;
     }
 
-    self.mObjsArray = nil;
-    self.mComparisonBlock = nil;
+    self.objsArray = nil;
+    self.comparisonBlock = nil;
 
     [super dealloc];
 }
 
 - (void)buildHeap {
-    if (self.mHeapified) {
+    if (self.heapified) {
         return;
     }
 
-    [self.mObjsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger index, BOOL *stop) {
+    [self.objsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger index, BOOL *stop) {
         [obj am_associateValue:self withKey:@"JBBSortDelegate"];
-        CFBinaryHeapAddValue(self.mObjs, obj);
+        CFBinaryHeapAddValue(self.objs, obj);
     }];
 
-    [self.mObjsArray removeAllObjects];
+    [self.objsArray removeAllObjects];
 
-    self.mHeapified = YES;
+    self.heapified = YES;
 }
 
 - (void)push:(id)obj {
-    if (self.mHeapified) {
+    if (self.heapified) {
         [obj am_associateValue:self withKey:@"JBBSortDelegate"];
-        CFBinaryHeapAddValue(self.mObjs, obj);
+        CFBinaryHeapAddValue(self.objs, obj);
     } else {
-        [self.mObjsArray addObject:obj];
+        [self.objsArray addObject:obj];
     }
 }
 
 - (void)pushObjects:(NSArray *)objs {
-    self.mHeapified = NO;
+    self.heapified = NO;
 
-    [self.mObjsArray addObjectsFromArray:objs];
+    [self.objsArray addObjectsFromArray:objs];
 }
 
 - (id)pop {
     id returnVal = [[self peek] retain];
 
-    CFBinaryHeapRemoveMinimumValue(self.mObjs);
+    CFBinaryHeapRemoveMinimumValue(self.objs);
 
     return [returnVal autorelease];
 }
@@ -157,7 +158,7 @@ CFComparisonResult JBBMaximumCallBack(const void *, const void *, void *);
     // There is a bug in CFBinaryHeapGetMinimumIfPresent().
     // FIXME: rdar://problem/7444195
 
-    return [[(id)CFBinaryHeapGetMinimum(self.mObjs) retain] autorelease];
+    return [[(id)CFBinaryHeapGetMinimum(self.objs) retain] autorelease];
 
     //    id returnVal = nil;
     //
@@ -187,34 +188,41 @@ CFComparisonResult JBBMaximumCallBack(const void *, const void *, void *);
 - (NSString *)description {
     [self buildHeap];
 
+    CFBinaryHeapRef tempHeap = CFBinaryHeapCreateCopy(NULL, 0, self.objs);
+
     // This is technically not working now, there is a bug in CFBinaryHeap, the description is incorrect
     // on Snow Leopard.
     // FIXME: rdar://problem/7219189
 
-    return [NSString stringWithFormat:@"JBBPriorityQueue = %@", [NSMakeCollectable(CFCopyDescription(self.mObjs)) autorelease]];
+    //return [NSString stringWithFormat:@"JBBPriorityQueue = %@", [NSMakeCollectable(CFCopyDescription(tempHeap)) autorelease]];
+
+    NSMutableString *result = [NSMutableString stringWithFormat:@"JBBPriorityQueue = {"];
+    if (CFBinaryHeapGetCount(tempHeap) != 0) {
+        [result appendFormat:@"\n"];
+        CFBinaryHeapApplyFunction(tempHeap, JBBBuildDescriptionCallBack, result);
+    }
+    [result appendFormat:@"}"];
+
+    CFRelease(tempHeap);
+
+    return result;
 }
 
 - (CFIndex)count {
-    return CFBinaryHeapGetCount(self.mObjs) + [self.mObjsArray count];
+    return CFBinaryHeapGetCount(self.objs) + [self.objsArray count];
 }
 
 - (BOOL)isEmpty {
-    return (CFBinaryHeapGetCount(self.mObjs) == 0) && ([self.mObjsArray count] == 0);
-}
-
-- (CFBinaryHeapCallBacks *)pCallBacks {
-    return &mCallBacks;
+    return (CFBinaryHeapGetCount(self.objs) == 0) && ([self.objsArray count] == 0);
 }
 
 - (NSUInteger)hash {
-    if (!self.mHeapified) {
-        [self buildHeap];
-    }
+    [self buildHeap];
 
     NSUInteger localHash = 0;
 
-    localHash ^= CFHash(self.mObjs);
-    localHash ^= self.mBoxed;
+    localHash ^= CFHash(self.objs);
+    localHash ^= self.boxed;
 
     return localHash;
 }
@@ -231,46 +239,42 @@ CFComparisonResult JBBMaximumCallBack(const void *, const void *, void *);
     return [self isEqualToQueue:otherObj];
 }
 
-- (BOOL) isEqualToQueue:(JBBPriorityQueue *)otherQueue {
+- (BOOL)isEqualToQueue:(JBBPriorityQueue *)otherQueue {
     if (self == otherQueue) {
         return YES;
     }
 
-    if (!self.mHeapified) {
-        [self buildHeap];
-    }
-    if (!otherQueue.mHeapified) {
-        [otherQueue buildHeap];
-    }
+    [self buildHeap];
+    [otherQueue buildHeap];
 
-    if (self.mBoxed != otherQueue.mBoxed) {
+    if (self.boxed != otherQueue.boxed) {
         return NO;
     }
 
-    CFIndex count1 = CFBinaryHeapGetCount(self.mObjs);
-    const void **array1 = calloc(count1, sizeof(void *));
-    CFBinaryHeapGetValues(self.mObjs, array1);
-    NSArray *NSArray1 = [NSArray arrayWithObjects:(id *)array1 count:count1];
+    CFBinaryHeapRef heap1 = CFBinaryHeapCreateCopy(NULL, 0, self.objs);
+    CFBinaryHeapRef heap2 = CFBinaryHeapCreateCopy(NULL, 0, otherQueue.objs);
+
+    const void **array1 = calloc(CFBinaryHeapGetCount(heap1), sizeof(void *));
+    CFBinaryHeapGetValues(heap1, array1);
+    NSArray *NSArray1 = [NSArray arrayWithObjects:(id *)array1 count:CFBinaryHeapGetCount(heap1)];
     free(array1);
 
-    CFIndex count2 = CFBinaryHeapGetCount(otherQueue.mObjs);
-    const void **array2 = calloc(count2, sizeof(void *));
-    CFBinaryHeapGetValues(otherQueue.mObjs, array2);
-    NSArray *NSArray2 = [NSArray arrayWithObjects:(id *)array2 count:count2];
+    const void **array2 = calloc(CFBinaryHeapGetCount(heap2), sizeof(void *));
+    CFBinaryHeapGetValues(heap2, array2);
+    NSArray *NSArray2 = [NSArray arrayWithObjects:(id *)array2 count:CFBinaryHeapGetCount(heap2)];
     free(array2);
 
-    if (![NSArray1 isEqualToArray:NSArray2]) {
-        return NO;
-    }
+    CFRelease(heap1);
+    CFRelease(heap2);
 
-    return YES;
+    return [NSArray1 isEqual:NSArray2];
 }
 @end
 
 // block callbacks
 
 CFComparisonResult JBBBlockCompare(id lhs, id rhs) {
-    JBBComparisonBlock localBlock = [[lhs am_associatedValueForKey:@"JBBSortDelegate"] mComparisonBlock];
+    JBBComparisonBlock localBlock = [[lhs am_associatedValueForKey:@"JBBSortDelegate"] comparisonBlock];
 
     return localBlock(lhs, rhs);
 }
@@ -290,7 +294,7 @@ CFComparisonResult JBBMinimumCompare(id <JBBComparisonProtocol> lhs, id <JBBComp
 }
 
 CFComparisonResult JBBMinimumCallBack(const void *lhs, const void *rhs, void *info) {
-    if ([[(id)lhs am_associatedValueForKey:@"JBBSortDelegate"] mBoxed]) {
+    if ([[(id)lhs am_associatedValueForKey:@"JBBSortDelegate"] boxed]) {
         return JBBMinimumBoxedCompare((id)lhs, (id)rhs);
     } else {
         return JBBMinimumCompare((id)lhs, (id)rhs);
@@ -299,5 +303,10 @@ CFComparisonResult JBBMinimumCallBack(const void *lhs, const void *rhs, void *in
 
 CFComparisonResult JBBMaximumCallBack(const void *lhs, const void *rhs, void *info) {
     return JBBMinimumCallBack(lhs, rhs, info) * -1;
+}
+
+void JBBBuildDescriptionCallBack(const void *val, void *context) {
+    NSMutableString *descriptionString = (NSMutableString *)context;
+    [descriptionString appendFormat:@"\t%@,\n", (id)val];
 }
 

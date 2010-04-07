@@ -156,7 +156,7 @@
 			attributes = {
 				ORGANIZATIONNAME = "Jordan Breeding";
 			};
-			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "JBBPriorityQueue (CFBinaryHeap Based)" */;
+			buildConfigurationList = 1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "JBBPriorityQueue" */;
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
 			mainGroup = 0867D691FE84028FC02AAC07 /* JBBPriorityQueue */;
@@ -272,7 +272,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "JBBPriorityQueue (CFBinaryHeap Based)" */ = {
+		1DEB91B108733DA50010E9CD /* Build configuration list for PBXProject "JBBPriorityQueue" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				1DEB91B308733DA50010E9CD /* Release */,
