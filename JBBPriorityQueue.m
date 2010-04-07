@@ -196,7 +196,7 @@ void JBBBuildDescriptionCallBack(const void *, void *);
 
     //return [NSString stringWithFormat:@"JBBPriorityQueue = %@", [NSMakeCollectable(CFCopyDescription(tempHeap)) autorelease]];
 
-    NSMutableString *result = [NSMutableString stringWithFormat:@"JBBPriorityQueue = {"];
+    NSMutableString *result = [NSMutableString stringWithFormat:@"<JBBPriorityQueue: %p> {", self];
     if (CFBinaryHeapGetCount(tempHeap) != 0) {
         [result appendFormat:@"\n"];
         CFBinaryHeapApplyFunction(tempHeap, JBBBuildDescriptionCallBack, result);
